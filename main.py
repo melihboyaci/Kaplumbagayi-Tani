@@ -47,12 +47,10 @@ class Orchestrator:
             )
             
             # Günlük log örneği (Bunu her günün sonunda bir kere çalışacak şekilde koddan çağırabilirsin)
-            self.reporting_agent.log_daily_progress(
+            self.reporting_agent.generate_ai_daily_log(
                 day=1,
-                actions="Data, Preprocessing, Recognition, Evaluation ve Reporting ajanları kodlandı. Orkestratör mimarisi kuruldu.",
-                results="ResNet50 modeli kullanılarak Cosine Similarity hesabı yapıldı ve %60 doğruluk eşiği belirlendi.",
-                issues="Henüz gerçek veri ile test edilmedi.",
-                improvements="Sistem tamamen modüler hale getirildi ve SOLID prensiplerine uygun tasarlandı."
+                similarity_score=similarity_score,
+                is_match=is_match
             )
 
         print("\n--- SÜREÇ TAMAMLANDI ---")

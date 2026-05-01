@@ -1,0 +1,22 @@
+# Çevre Değişkenleri ve Gizli Dosyalar (API Key'ler burada duracak)
+.env
+
+# Python Önbellek Dosyaları
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Sanal Ortam (Virtual Environment)
+venv/
+.venv/
+env/
+
+# IDE ve İşletim Sistemi Dosyaları
+.vscode/
+.idea/
+.DS_Store
+
+# Veri Klasörü (Büyük veri setlerini Git'e atmamak için)
+# Sadece klasör yapısını korumak istersen data/ içindeki resimleri yoksayar
+data/*
+!data/.gitkeep
