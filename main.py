@@ -2,7 +2,7 @@ from agents.data_collection import DataCollectionAgent
 from agents.preprocessing import PreprocessingAgent
 from agents.recognition import RecognitionAgent
 from agents.evaluation import EvaluationAgent
-# Raporlama ajanını yazdığımızda buraya ekleyeceğiz
+from agents.reporting import ReportingAgent
 
 class Orchestrator:
     """
@@ -15,7 +15,8 @@ class Orchestrator:
         self.data_agent = DataCollectionAgent(data_dir="data")
         self.prep_agent = PreprocessingAgent()
         self.recog_agent = RecognitionAgent()
-        self.eval_agent = EvaluationAgent(similarity_threshold=0.60)
+        self.eval_agent = EvaluationAgent(similarity_threshold=0.60)    
+        self.reporting_agent = ReportingAgent()
         
     def run_pipeline(self):
         print("--- KAPLUMBAĞA YÜZ TANIMA SÜRECİ BAŞLADI ---\n")
@@ -32,14 +33,27 @@ class Orchestrator:
         # ADIM 3: Özellik Çıkarımı (Yüz Tanıma)
         features = self.recog_agent.extract_features(processed_imgs)
 
-        # ADIM 4: Değerlendirme
-        # Şimdilik klasördeki ilk iki resmi birbiriyle karşılaştırıyoruz
+        # ADIM 4 & 5: Değerlendirme ve Raporlama
         if len(features) >= 2:
             print("\n--- DEĞERLENDİRME AŞAMASI ---")
             is_match, similarity_score = self.eval_agent.compare_turtles(features[0], features[1])
             
-            # ADIM 5: Raporlama (Bir sonraki aşamada buraya eklenecek)
-            # self.reporting_agent.log_result(is_match, similarity_score)
+            # Sonucu rapora yazdırıyoruz
+            self.reporting_agent.log_evaluation_result(
+                image1_path=image_paths[0], 
+                image2_path=image_paths[1], 
+                is_match=is_match, 
+                similarity=similarity_score
+            )
+            
+            # Günlük log örneği (Bunu her günün sonunda bir kere çalışacak şekilde koddan çağırabilirsin)
+            self.reporting_agent.log_daily_progress(
+                day=1,
+                actions="Data, Preprocessing, Recognition, Evaluation ve Reporting ajanları kodlandı. Orkestratör mimarisi kuruldu.",
+                results="ResNet50 modeli kullanılarak Cosine Similarity hesabı yapıldı ve %60 doğruluk eşiği belirlendi.",
+                issues="Henüz gerçek veri ile test edilmedi.",
+                improvements="Sistem tamamen modüler hale getirildi ve SOLID prensiplerine uygun tasarlandı."
+            )
 
         print("\n--- SÜREÇ TAMAMLANDI ---")
 
