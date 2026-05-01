@@ -18,8 +18,8 @@ class ReportingAgent:
             
         genai.configure(api_key=self.api_key)
         
-        # Raporlamak için kullanacağımız AI modeli
-        self.model = genai.GenerativeModel('gemini-1.5-flash')
+        # Raporlamak için kullanacağımız AI modeli (En güncel stabil sürüm)
+        self.model = genai.GenerativeModel('gemini-flash-latest')
         
         if not os.path.exists(self.log_file):
             with open(self.log_file, "w", encoding="utf-8") as f:
