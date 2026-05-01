@@ -33,3 +33,9 @@ class DataCollectionAgent:
             print(f"DataCollectionAgent: Toplam {len(image_paths)} adet görsel başarıyla toplandı.")
             
         return image_paths
+
+# Single Responsibility Principle (Tek Sorumluluk Prensibi): Bu sınıf sadece ve sadece dosya okuma ve yol bulma işi yapıyor. Görüntüyü kırpmıyor, yapay zeka modeline sokmuyor.  
+
+# Tip Belirtme (Type Hinting): -> List[str] gibi ifadeler kullanarak kodun ne döndüreceğini net bir şekilde belirttik. Bu, takım çalışmasında ve AI asistanların kodu okumasında büyük kolaylık sağlar.
+
+# Hata Yönetimi (Error Handling): Klasörün olmaması veya içinin boş olması gibi durumlar için basit ama etkili kontroller (If/Else) ekledik.
