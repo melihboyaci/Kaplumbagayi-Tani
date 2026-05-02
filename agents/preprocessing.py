@@ -4,38 +4,50 @@ from typing import List, Tuple
 
 class PreprocessingAgent:
     """
-    Toplanan ham kaplumbağa görsellerini yapay zeka modelinin (ResNet50 vb.) 
-    anlayabileceği standart boyutlara ve RGB formatına getiren ajandır.
+    Kaplumbağa görsellerini standart boyutlara (RGB) getirir ve 
+    arka plan gürültüsünü azaltmak için merkeze odaklanan (Center Crop) 
+    bir yüz kırpma işlemi uygular.
     """
     
-    def __init__(self, target_size: Tuple[int, int] = (224, 224)):
-        # Modelin beklediği boyutu dışarıdan parametre olarak alıyoruz.
+    def __init__(self, target_size: Tuple[int, int] = (224, 224), crop_ratio: float = 0.8):
         self.target_size = target_size
+        self.crop_ratio = crop_ratio # Resmin yüzde kaçlık merkez kısmını alacağımız (Day 2 güncellemesi)
 
     def process_images(self, image_paths: List[str]) -> List[np.ndarray]:
-        """
-        Görsel yollarını okur, boyutlandırır ve işlenmiş numpy dizileri döner.
-        """
         processed_images = []
         
         for path in image_paths:
-            # Resmi OpenCV ile oku (OpenCV varsayılan olarak BGR formatında okur)
             img = cv2.imread(path)
             
             if img is None:
-                print(f"Uyarı: {path} dosyası okunamadı veya bozuk, atlanıyor.")
+                print(f"Uyarı: {path} dosyası okunamadı, atlanıyor.")
                 continue
                 
-            # OpenCV'nin BGR formatını, standart olan RGB formatına çevir
             img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
             
-            # Resmi hedeflenen boyuta (örn: 224x224) yeniden boyutlandır
-            img_resized = cv2.resize(img_rgb, self.target_size)
+            # --- DAY 2 İYİLEŞTİRMESİ: Center Crop (Merkezden Kırpma) ---
+            # Arka planı azaltıp kaplumbağanın yüzüne odaklanmak için
+            height, width = img_rgb.shape[:2]
+            
+            # Kırpılacak alanın sınırlarını belirliyoruz
+            new_width = int(width * self.crop_ratio)
+            new_height = int(height * self.crop_ratio)
+            
+            left = (width - new_width) // 2
+            top = (height - new_height) // 2
+            right = (width + new_width) // 2
+            bottom = (height + new_height) // 2
+            
+            # Resmi merkezden kırpıyoruz
+            img_cropped = img_rgb[top:bottom, left:right]
+            # -----------------------------------------------------------
+            
+            # Kırpılmış resmi modelin istediği 224x224 boyutuna getir
+            img_resized = cv2.resize(img_cropped, self.target_size)
             
             processed_images.append(img_resized)
             
-        print(f"PreprocessingAgent: Toplam {len(processed_images)} görsel {self.target_size} boyutunda işlendi.")
-        
+        print(f"PreprocessingAgent: {len(processed_images)} görsel kırpılarak {self.target_size} boyutunda işlendi.")
         return processed_images
 
 # Açık/Kapalı Prensibi (Open/Closed Principle - OCP): Dikkat edersen sınıfın __init__ metodunda target_size=(224, 224) parametresini tanımladık. Eğer ileride farklı bir yüz tanıma modeli (örneğin InceptionV3, ki 299x299 piksel bekler) kullanmak istersek, sınıfın içindeki kodu değiştirmek (modify) zorunda kalmayacağız. Sınıfı çağırırken sadece yeni bir parametre vererek kodumuzu genişletmiş (extend) olacağız. Bu, SOLID'in 'O' harfinin harika bir örneğidir.
