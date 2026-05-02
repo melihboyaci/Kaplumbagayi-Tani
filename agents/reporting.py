@@ -2,13 +2,15 @@ import os
 from datetime import datetime
 import google.generativeai as genai
 from dotenv import load_dotenv
+from agents import BaseAgent
 
-class ReportingAgent:
+class ReportingAgent(BaseAgent):
     """
     Sistemin sonuçlarını LLM (Büyük Dil Modeli) kullanarak analiz eden 
     ve bir araştırmacı diliyle Markdown (.md) raporu üreten zeki ajandır.
     """
     def __init__(self, log_file: str = "gelisim_raporu.md"):  
+        super().__init__()
         load_dotenv()
         self.log_file = log_file
         self.api_key = os.getenv("GEMINI_API_KEY")
@@ -26,6 +28,21 @@ class ReportingAgent:
                 f.write("# Kaplumbağa Yüz Tanıma Projesi - Gelişim Raporu\n\n")
                 f.write("> Bu dosya AI destekli ReportingAgent tarafından oluşturulmaktadır.\n\n")
                 f.write("---\n\n")
+
+    def run(self, input_data: dict):
+        self.log(
+            f"Günlük rapor hazırlanıyor. Day: {input_data['day']}, "
+            f"Skor: {input_data['similarity_score']:.4f}, Eşleşme: {input_data['is_match']}"
+        )
+        return self.generate_ai_daily_log(
+            day=input_data["day"],
+            similarity_score=input_data["similarity_score"],
+            is_match=input_data["is_match"]
+        )
+
+    def validate_input(self, input_data) -> bool:
+        required_keys = {"day", "similarity_score", "is_match"}
+        return isinstance(input_data, dict) and required_keys.issubset(input_data.keys())
 
     def log_evaluation_result(self, image1_path: str, image2_path: str, is_match: bool, similarity: float):
         """Test sonuçlarını rapora ekler."""

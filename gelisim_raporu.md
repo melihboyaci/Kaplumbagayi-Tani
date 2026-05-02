@@ -1,4 +1,31 @@
+## 🗺️ Proje Gelişim Özeti
+
+### Başlangıç Mimarisi (Gün 1)
+
+- 5 bağımsız Python sınıfı (BaseAgent yok)
+- Tek LLM entegrasyonu: ReportingAgent (Gemini)
+- Temel 1-to-N eşleştirme pipeline'ı
+- SOLID uyumu: %40
+
+### Mevcut Mimari (Gün 3)
+
+- BaseAgent abstract sınıfı eklendi (SOLID DIP)
+- 5 ajan BaseAgent'tan miras alıyor
+- HeadDetectionAgent: OpenCV contour + fallback crop
+- PreprocessingAgent: str + numpy array desteği
+- Her ajan validate_input() + log() kullanıyor
+- SOLID uyumu: %80
+
+### Sonraki Adımlar
+
+- AuditAgent: Dosya validasyonu
+- README: Mimari dokümantasyon
+- 2. LLM ajan entegrasyonu
+
+---
+
 ### Test Sonucu (18:28:10)
+
 - **Görsel 1:** `test1.jpeg`
 - **Görsel 2:** `test2.jpeg`
 - **Benzerlik Skoru:** %86.28
@@ -23,6 +50,7 @@ Sistemin temel iskeletini tamamen **modüler** bir yapıda kurguladık. Bu sayed
 ---
 
 ### Test Sonucu (18:38:32)
+
 - **Görsel 1:** `test2.JPG`
 - **Görsel 2:** `test1.jpeg`
 - **Benzerlik Skoru:** %74.45
@@ -47,6 +75,7 @@ Day 1 itibarıyla sistemin **modüler mimarisi** başarıyla kurgulandı; bu say
 ---
 
 ### Test Sonucu (14:30:35)
+
 - **Görsel 1:** `test1.jpeg`
 - **Görsel 2:** `test2.jpeg`
 - **Benzerlik Skoru:** %91.80
@@ -105,4 +134,3 @@ Skorun yüksek olması her ne kadar sevindirici olsa da, sistemin "overfitting" 
 Mimarimizi daha modüler bir yapıya dönüştürdük; bu sayede ilerleyen aşamalarda ResNet50 yerine daha hafif olan MobileNet veya daha kompleks olan Vision Transformers (ViT) modellerini "tak-çalıştır" mantığıyla deneyebileceğiz. Bir sonraki adımda, modelin sadece kaplumbağanın yüzüne odaklanmasını sağlamak ve çevresel faktörleri (su, kum, yosun) dışarıda bırakmak için bir **Bounding Box (Sınırlayıcı Kutu)** ön işleme aşaması ekleyerek sistemin sahadaki hassasiyetini artırmayı hedefliyoruz.
 
 ---
-

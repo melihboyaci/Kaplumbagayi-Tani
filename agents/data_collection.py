@@ -1,15 +1,25 @@
 import os
 import glob
 from typing import List
+from agents import BaseAgent
 
-class DataCollectionAgent:
+class DataCollectionAgent(BaseAgent):
     """
     Kaplumbağa görsellerini belirtilen veri kaynağından (klasörden) 
     toplamakla görevli ajandır.
     """
     
     def __init__(self, data_dir: str):
+        super().__init__()
         self.data_dir = data_dir
+
+    def run(self, input_data: str = None):
+        result = self.gather_turtle_images()
+        self.log(f"{len(result)} adet görsel toplandı.")
+        return result
+
+    def validate_input(self, input_data) -> bool:
+        return os.path.exists(self.data_dir)
 
     def gather_turtle_images(self) -> List[str]:
         """

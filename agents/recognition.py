@@ -1,16 +1,18 @@
 import numpy as np
 from typing import List
+from agents import BaseAgent
 
 # TensorFlow ve Keras kütüphanelerini içe aktarıyoruz
 from tensorflow.keras.applications.resnet50 import ResNet50, preprocess_input
 
-class RecognitionAgent:
+class RecognitionAgent(BaseAgent):
     """
     Ön işlenmiş kaplumbağa görsellerini alır ve önceden eğitilmiş bir 
     derin öğrenme modeli (ResNet50) kullanarak her görsel için 
     benzersiz bir sayısal özet (embedding/vektör) çıkarır.
     """
     def __init__(self):
+        super().__init__()
         print("RecognitionAgent: ResNet50 modeli yükleniyor. Bu biraz sürebilir...")
         
         # include_top=False: Sınıflandırma (classification) katmanını çöpe atıyoruz.
@@ -19,6 +21,14 @@ class RecognitionAgent:
         self.model = ResNet50(weights='imagenet', include_top=False, pooling='avg')
         
         print("RecognitionAgent: Model başarıyla yüklendi!")
+
+    def run(self, input_data: list):
+        features = self.extract_features(input_data)
+        self.log(f"{len(features)} görsel için özellik çıkarıldı.")
+        return features
+
+    def validate_input(self, input_data) -> bool:
+        return isinstance(input_data, list) and len(input_data) > 0
 
     def extract_features(self, processed_images: List[np.ndarray]) -> List[np.ndarray]:
         """

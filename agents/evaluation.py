@@ -1,16 +1,27 @@
 import numpy as np
 from scipy.spatial.distance import cosine
 from typing import Tuple
+from agents import BaseAgent
 
-class EvaluationAgent:
+class EvaluationAgent(BaseAgent):
     """
     RecognitionAgent tarafından çıkarılan özellik vektörlerini karşılaştırarak 
     kaplumbağaların aynı olup olmadığını değerlendirir.
     """
     
     def __init__(self, similarity_threshold: float = 0.60):
+        super().__init__()
         # Ödevdeki %60 doğruluk/benzerlik hedefini eşik değeri olarak belirliyoruz.
         self.similarity_threshold = similarity_threshold
+
+    def run(self, input_data: tuple):
+        feature1, feature2 = input_data
+        is_match, similarity = self.compare_turtles(feature1, feature2)
+        self.log(f"Karşılaştırma tamamlandı. Eşleşme: {is_match}, Benzerlik: {similarity:.4f}")
+        return is_match, similarity
+
+    def validate_input(self, input_data) -> bool:
+        return isinstance(input_data, tuple) and len(input_data) == 2
 
     def compare_turtles(self, feature1: np.ndarray, feature2: np.ndarray) -> Tuple[bool, float]:
         """
